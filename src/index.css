@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.input_range {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  background-color: rgb(166, 166, 166);
+  background-image: linear-gradient(rgb(14 165 233), rgb(14 165 233));
+  background-repeat: no-repeat;
+  border-radius: 5px;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+}
+.input_range:hover {
+  height: 8px;
+}
+.input_range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: rgb(14 165 233);
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  visibility: hidden;
+}
+.input_range:hover::-webkit-slider-thumb {
+  visibility: visible;
+}
