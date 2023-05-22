@@ -7,7 +7,7 @@ import { LinkBtn } from './partials'
 
 export default function Navigation() {
   return (
-    <nav className='w-[260px] h-screen bg-white shadow-md z-50 overflow-auto dark:shadow-sky-900 dark:bg-dark'>
+    <nav className='w-[260px] h-screen bg-white shadow-md z-50 overflow-auto fixed top-0 l-0 b-0 dark:shadow-sky-900 dark:bg-dark'>
       <div className='py-2 px-6'>
         <Link to='/' className='flex flex-col items-center'>
           <img src={LogoProMusic} className='w-[120px] h-[80px] block' alt="Logo" />

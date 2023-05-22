@@ -14,7 +14,7 @@ interface Props {
 
 export default function VolumeControl({ songInfor }: Props) {
   const [isMvShow, setIsMvShow] = useState<boolean>(false)
-  const [isPlaylistShow, setIsPlaylistShow] = useState<boolean>(true)
+  const [isPlaylistShow, setIsPlaylistShow] = useState<boolean>(false)
 
   const { isMuted, volume } = useSelector((state: RootState) => state.player)
   const dispatch = useDispatch()
@@ -51,7 +51,7 @@ export default function VolumeControl({ songInfor }: Props) {
         >
           <span className='px-[2px] py-[1px] rounded-lg border-2 border-black dark:border-white'>MV</span>
         </button>
-        {isMvShow && <Mv idMv={songInfor?.data.link_mv || ''} handleShowMv={handleShowMv} />}
+        {isMvShow && <Mv idMv={songInfor?.link_mv || ''} handleShowMv={handleShowMv} />}
       </div>
       <div className='max-w-[150px] flex items-center gap-2'>
         <div>

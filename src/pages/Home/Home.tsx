@@ -1,10 +1,12 @@
 import React from 'react'
-import { PlayListSkeleton, PlayerSkeleton } from 'src/components/Skeleton'
+import Slider from './components/Slider'
+import NewMusic from './components/NewMusic'
 
 export default function Home() {
   return (
-    <div>
-      <PlayListSkeleton />
+    <div className='w-full overflow-hidden px-14 mb-[90px]'>
+      <Slider />
+      <NewMusic />
     </div>
   )
 }

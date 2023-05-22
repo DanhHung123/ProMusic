@@ -12,8 +12,8 @@ interface Props {
 function ThumnailSong({ songInfor }: Props) {
 
   const handleDownLoadSong = useCallback(() => {
-    if (songInfor?.data) {
-      downLoadSong(songInfor?.data?.src_music, songInfor?.data?.name_music)
+    if (songInfor) {
+      downLoadSong(songInfor?.src_music, songInfor?.name_music)
     }
   }, [songInfor])
 
@@ -21,11 +21,11 @@ function ThumnailSong({ songInfor }: Props) {
     <div className='flex items-center gap-3'>
       <img className='h-16 w-16 rounded-lg object-cover'
         alt='Song Player'
-        src={songInfor?.data?.image_music}
-        title={songInfor?.data?.name_music} />
+        src={songInfor?.image_music}
+        title={songInfor?.name_music} />
       <div className='text-medium'>
-        <h4 className='text-base'>{songInfor?.data.name_music}</h4>
-        <span className='text-xs opacity-80 dark:text-gray-300'>{songInfor?.data?.name_singer}</span>
+        <h4 className='text-base'>{songInfor?.name_music}</h4>
+        <span className='text-xs opacity-80 dark:text-gray-300'>{songInfor?.name_singer}</span>
       </div>
       <div className='flex gap-3 ml-3'>
         <BtnControl icon={faHeartRegular} addClass='text-lg' />

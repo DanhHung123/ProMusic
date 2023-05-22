@@ -56,9 +56,9 @@ function MainPlayerControl({ songInfor }: Props) {
   }, [audioRef, isPlayChange, setPercentProcess])
 
   const calculatePercentProcess = useCallback((curTime?: number) => {
-    if (songInfor?.data) {
+    if (songInfor) {
       if (audioRef.current) {
-        let percent = Math.round((curTime ? curTime : audioRef.current.currentTime) * 10000 / songInfor?.data.seconds) / 100
+        let percent = Math.round((curTime ? curTime : audioRef.current.currentTime) * 10000 / songInfor.seconds) / 100
         setPercentProcess(percent)
       }
     }
@@ -100,21 +100,21 @@ function MainPlayerControl({ songInfor }: Props) {
             className='input_range h-[5px]'
             style={{ backgroundSize: `${percentProcess}%  100%` }}
             type="range" min='0'
-            max={songInfor?.data.seconds}
+            max={songInfor?.seconds}
             value={audioRef.current?.currentTime}
             onChange={handleChangeValueProcess}
           />
           <div className=''>
             <audio
               ref={audioRef}
-              src={songInfor?.data.src_music}
+              src={songInfor?.src_music}
               loop={isLoop}
               onEnded={handlerSongEnded}
               muted={isMuted}
             />
           </div>
         </div>
-        <span>{songInfor?.data.time_format}</span>
+        <span>{songInfor?.time_format}</span>
       </div>
     </div>
   )
