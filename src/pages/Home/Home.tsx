@@ -1,12 +1,11 @@
-import React from 'react'
-import Slider from './components/Slider'
-import NewMusic from './components/NewMusic'
+import { NewMusic, Slider, TopFavourite } from './components'
 
 export default function Home() {
   return (
-    <div className='w-full overflow-hidden px-14 mb-[90px]'>
+    <div className='w-full overflow-hidden px-14 pb-[120px]'>
       <Slider />
       <NewMusic />
+      <TopFavourite />
     </div>
   )
 }

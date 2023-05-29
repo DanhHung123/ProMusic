@@ -1,24 +1,32 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay, faDownload } from '@fortawesome/free-solid-svg-icons'
-import { faHeart as faHeartRegur } from '@fortawesome/free-regular-svg-icons'
+import { faPlay, faDownload, faHeart } from '@fortawesome/free-solid-svg-icons'
 import BtnControl from './BtnControl'
 import { downLoadSong } from 'src/api/music.api'
 import { useSelector } from 'react-redux'
 import { RootState } from 'src/redux/store'
-import { PlayListSkeleton } from 'src/components/Skeleton'
 import { useCheckMatchCurrentSong, usePLayASong } from 'src/hooks'
 import { SongInfor } from 'src/types/music.type'
 import sound from 'src/assets/sound.svg'
 
 function Playlist() {
   const [switchPlaylist, setSwitchPlaylist] = useState<boolean>(true)
+  const [listSong, setListSong] = useState<SongInfor[]>([])
 
-  const { playList } = useSelector((state: RootState) => state.player)
+  const { playList, currentSong } = useSelector((state: RootState) => state.player)
 
   const { handlePLaySong } = usePLayASong()
 
   const { checkMatchCurrentSong } = useCheckMatchCurrentSong()
+
+  useEffect(() => {
+    const playlistHistory = JSON.parse(localStorage.getItem('playlistHistory') || '[]')
+    if (!switchPlaylist) {
+      setListSong(playlistHistory)
+    } else {
+      setListSong(playList)
+    }
+  }, [currentSong, playList, switchPlaylist])
 
   const hanldeSwitchPlaylist = useCallback(() => {
     setSwitchPlaylist(!switchPlaylist)
@@ -29,9 +37,9 @@ function Playlist() {
   }, [downLoadSong])
 
   return (
-    <div className='w-[350px] h-[calc(100vh-90px)] fixed right-0 top-0 bottom-0 bg-gray-200 transition-transform  animate-horizontal flex flex-col'>
+    <div className='w-[350px] h-[calc(100vh-90px)] fixed right-0 top-0 bottom-0 bg-gray-200 transition-transform  animate-horizontal flex flex-col dark:bg-slate-800'>
       <div className='py-4 px-2'>
-        <div className='p-1 rounded-full bg-gray-300'>
+        <div className='p-1 rounded-full bg-gray-300 dark:bg-slate-900'>
           <button type='button' className={`w-1/2 py-2 text-sm rounded-full text-center transition-all ${!switchPlaylist ? 'text-gray-500 bg-transparent ' : 'text-white bg-gradient-to-tl from-gradientPink to-gradientBlue '}`}
             onClick={hanldeSwitchPlaylist}
           >
@@ -48,16 +56,16 @@ function Playlist() {
       <div className='px-2 flex-1 overflow-y-auto'>
         <ul className='my-3'>
           {
-            playList?.map((song: SongInfor) => {
+            listSong?.map((song: SongInfor) => {
               return (
-                <li key={song._id} className={`p-2 rounded-md flex items-center group relative  
-                ${checkMatchCurrentSong(song._id) ? 'bg-cyan-200' : 'hover:bg-gray-300'}`}>
+                <li key={song._id} className={`p-2 rounded-md flex items-center group relative mb-2
+                ${checkMatchCurrentSong(song._id) ? 'bg-gradient-to-tl to-gradientBlue from-gradientPink text-white' : 'hover:bg-gray-300 dark:hover:bg-gray-600/80'}`}>
                   <div>
                     <div className='w-11 h-11 relative'>
                       {
                         !checkMatchCurrentSong(song._id) &&
                         <button type='button' className='w-full h-full rounded-md absolute top-0 bottom-0 right-0 left-0 text-lg text-white bg-gray-200/40 hidden group-hover:block'
-                          onClick={() => { handlePLaySong(song._id, playList) }}
+                          onClick={() => { handlePLaySong(song._id, listSong) }}
                         >
                           <FontAwesomeIcon icon={faPlay} />
                         </button>
@@ -80,7 +88,7 @@ function Playlist() {
                     </span>
                   </div>
                   <div className='flex items-center absolute top-0 bottom-0 right-0 invisible group-hover:visible'>
-                    <BtnControl icon={faHeartRegur} title='Add to favorites' />
+                    <BtnControl icon={faHeart} title='Add to favorites' addClass='hover:text-sky-500' />
                     <BtnControl icon={faDownload} title='Download'
                       onClick={() => { handleDownLoadSong(song.src_music, song.name_music) }}
                     />

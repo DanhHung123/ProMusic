@@ -19,6 +19,15 @@ export const getNewMusic = (limit: number, page: number) => {
   })
 }
 
+export const getTopFavourite = (limit: number, page: number) => {
+  return http.get<ListSong>('/music/top-favorite', {
+    params: {
+      _limit: limit,
+      _page: page
+    }
+  })
+}
+
 export const downLoadSong = (url: string, songName: string) => {
   return http
     .get(url, {

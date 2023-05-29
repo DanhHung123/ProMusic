@@ -3,17 +3,16 @@ import { RootState } from 'src/redux/store'
 import { useSelector, useDispatch } from 'react-redux'
 import { isMutedChange, isVolumeChange } from 'src/redux/slice/playerSlice'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faVolumeHigh, faListUl, faVolumeXmark } from '@fortawesome/free-solid-svg-icons'
-import Mv from './Mv'
+import { faVolumeHigh, faListUl, faVolumeXmark, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import Playlist from './Playlist'
 import { SongInfor } from 'src/types/music.type'
+import BtnControl from './BtnControl'
 
 interface Props {
   songInfor: SongInfor | null
 }
 
 export default function VolumeControl({ songInfor }: Props) {
-  const [isMvShow, setIsMvShow] = useState<boolean>(false)
   const [isPlaylistShow, setIsPlaylistShow] = useState<boolean>(false)
 
   const { isMuted, volume } = useSelector((state: RootState) => state.player)
@@ -34,24 +33,21 @@ export default function VolumeControl({ songInfor }: Props) {
     isMuted ? dispatch(isVolumeChange(1)) : dispatch(isVolumeChange(0))
   }
 
-  const handleShowMv = () => {
-    setIsMvShow(!isMvShow)
-  }
-
   const handlePlaylistShow = () => {
     setIsPlaylistShow(!isPlaylistShow)
   }
 
   return (
-    <div className='flex items-center justify-end gap-3'>
+    <div className='flex items-center justify-end gap-3 pr-3'>
       <div>
-        <button className='uppercase rounded-full h-9 w-9 flex items-center justify-center text-[10px] font-semibold hover:bg-gray-200 dark:hover:bg-gray-300/40'
+        {/* <button className='uppercase rounded-full h-9 w-9 flex items-center justify-center text-[10px] font-semibold hover:bg-gray-200 dark:hover:bg-gray-300/40'
           type='button'
           onClick={handleShowMv}
         >
           <span className='px-[2px] py-[1px] rounded-lg border-2 border-black dark:border-white'>MV</span>
         </button>
-        {isMvShow && <Mv idMv={songInfor?.link_mv || ''} handleShowMv={handleShowMv} />}
+        {isMvShow && <Mv idMv={songInfor?.link_mv || ''} handleShowMv={handleShowMv} />} */}
+        <BtnControl icon={faCommentDots} title='Comments' addClass='text-xl' />
       </div>
       <div className='max-w-[150px] flex items-center gap-2'>
         <div>

@@ -2,18 +2,17 @@ import { useCallback } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart, faEye, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from 'react-query'
-import { useSelector } from 'react-redux'
-import { RootState } from 'src/redux/store'
 import { getNewMusic } from 'src/api/music.api'
 import { SongInfor } from 'src/types/music.type'
 import sound from 'src/assets/sound.svg'
 import { useCheckMatchCurrentSong, usePLayASong } from 'src/hooks'
+import { NewReleaseSkeleton } from 'src/components/Skeleton'
+import { formatNumber } from 'src/utils/functionConst'
 
 const PAGE = 1
 const LIMIT = 20
 
 export default function NewMusic() {
-  const { currentSong, isPlay } = useSelector((state: RootState) => state.player)
 
   const { data, isLoading } = useQuery({
     queryKey: ['New Release', LIMIT, PAGE],
@@ -25,30 +24,17 @@ export default function NewMusic() {
 
   const { checkMatchCurrentSong } = useCheckMatchCurrentSong()
 
-  const formatNumber = useCallback((number: number): string => {
-    const suffixes: string[] = ["", "K", "M", "B", "T"];
-    let suffixIndex: number = 0;
-
-    while (number >= 1000 && suffixIndex < suffixes.length - 1) {
-      suffixIndex++;
-      number /= 1000;
-    }
-
-    const formattedNumber: string = number.toFixed(1) + suffixes[suffixIndex];
-
-    return formattedNumber;
-  }, [])
-
   return (
     <section className='w-full overflow-hidden'>
-      <h3 className='text-2xl font-semibold'>New release</h3>
+      <h3 className='text-2xl font-semibold dark:text-white'>New release</h3>
       <div className='mt-3 grid grid-cols-4 gap-2'>
         {
+          // <NewReleaseSkeleton />
           !isLoading ?
             data?.data.data.map((song: SongInfor) => {
               return (
-                <div key={song._id} className={`flex items-center justify-between p-2 rounded-md group  
-                ${checkMatchCurrentSong(song._id) ? 'bg-cyan-200' : 'hover:bg-cyan-100/80'}`}>
+                <div key={song._id} className={`flex items-center justify-between p-2 rounded-md group dark:text-gray-200 
+                ${checkMatchCurrentSong(song._id) ? 'bg-gradient-to-tl to-gradientBlue from-gradientPink text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-600/80'}`}>
                   <div className='h-12 w-12 relative'>
                     <img className='w-full h-full object-cover rounded-lg' src={song.image_music} alt="new music" />
                     {
@@ -65,10 +51,10 @@ export default function NewMusic() {
                       </button>
                     }
                   </div>
-                  <div className='flex flex-col text-sm px-1'>
+                  <div className='flex flex-col text-sm px-1 '>
                     <span className='font-medium text-base line-clamp-1'>{song.name_music}</span>
                     <span>{song.name_singer}</span>
-                    <p className='text-gray-500'>
+                    <p className={`text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 ${checkMatchCurrentSong(song._id) && 'text-gray-100 group-hover:text-gray-100'}`}>
                       <span><FontAwesomeIcon icon={faHeart} /> {formatNumber(song.view)} view</span>
                       <span className='ml-2'><FontAwesomeIcon icon={faEye} /> {formatNumber(song.favorite)} favorite</span>
                     </p>
@@ -81,6 +67,7 @@ export default function NewMusic() {
             })
             :
             <>
+              <NewReleaseSkeleton count={20} />
             </>
         }
       </div>

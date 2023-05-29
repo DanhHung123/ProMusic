@@ -15,9 +15,14 @@ A music website built with **React, Typescript** and is a personal project of **
 - React Query
 - Redux Toolkit
 - Axios
+- React router
 
 ## Preview
 
 #### Home Page
 
 ![Home Page](/public/ImgDocument/HomePage.png)
+
+#### Home Page(Dark Mode)
+
+![Home Page](/public/ImgDocument/HomePageDark.png)

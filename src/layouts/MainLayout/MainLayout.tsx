@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from 'src/components/Header'
 import Navigation from 'src/components/Navigation'
 import Player from 'src/components/Player';
@@ -10,7 +10,15 @@ interface Props {
 export default function MainLayout({ children }: Props) {
   const [darkMode, setDarkMode] = useState<boolean>(true);
 
+  useEffect(() => {
+    if (localStorage.getItem('darkMode')) {
+      const darkModeLocal = JSON.parse(localStorage.getItem('darkMode') || 'true')
+      setDarkMode(darkModeLocal)
+    }
+  }, [])
+
   const switchDarkMode = () => {
+    localStorage.setItem('darkMode', JSON.stringify(!darkMode))
     setDarkMode(!darkMode)
   }
   return (

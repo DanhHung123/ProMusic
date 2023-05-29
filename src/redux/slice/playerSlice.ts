@@ -8,6 +8,7 @@ interface InitState {
   volume: number
   playList: any
   currentSong: SongInfor | null
+  playlistHistory: SongInfor[]
 }
 
 const initialState: InitState = {
@@ -16,7 +17,8 @@ const initialState: InitState = {
   isMuted: false,
   volume: 1,
   playList: null,
-  currentSong: null
+  currentSong: null,
+  playlistHistory: []
 }
 
 export const playerSlice = createSlice({
@@ -40,12 +42,22 @@ export const playerSlice = createSlice({
     },
     currentSongChange: (state, action: PayloadAction<SongInfor | null>) => {
       state.currentSong = action.payload
+    },
+    playlistHistoryChange: (state, action: PayloadAction<SongInfor[]>) => {
+      state.playlistHistory = action.payload
     }
   }
 })
 
-export const { isPlayChange, isRepeatChange, isMutedChange, isVolumeChange, playListChange, currentSongChange } =
-  playerSlice.actions
+export const {
+  isPlayChange,
+  isRepeatChange,
+  isMutedChange,
+  isVolumeChange,
+  playListChange,
+  currentSongChange,
+  playlistHistoryChange
+} = playerSlice.actions
 
 const playerReducer = playerSlice.reducer
 export default playerReducer

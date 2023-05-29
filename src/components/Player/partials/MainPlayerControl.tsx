@@ -3,22 +3,20 @@ import BtnControl from './BtnControl'
 import { faShuffle, faStepBackward, faForwardStep, faCirclePlay, faRepeat, faCirclePause } from '@fortawesome/free-solid-svg-icons'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'src/redux/store'
-import { isPlayChange } from 'src/redux/slice/playerSlice'
+import { currentSongChange, isPlayChange } from 'src/redux/slice/playerSlice'
 import { SongInfor } from 'src/types/music.type'
 
-interface Props {
-  songInfor: SongInfor | null
-}
+const arrRandom: number[] = []
 
-function MainPlayerControl({ songInfor }: Props) {
+function MainPlayerControl() {
   const audioRef = useRef<HTMLAudioElement>(null)
 
   const [isLoop, setIsLoop] = useState<boolean>(false)
   const [percentProcess, setPercentProcess] = useState<number>(0)
+  const [isRandom, setIsRandom] = useState<boolean>(false)
 
-  const { isPlay, volume, isMuted } = useSelector((state: RootState) => state.player)
+  const { isPlay, volume, isMuted, currentSong, playList } = useSelector((state: RootState) => state.player)
   const dispatch = useDispatch()
-
 
   useEffect(() => {
     if (audioRef.current) {
@@ -40,12 +38,36 @@ function MainPlayerControl({ songInfor }: Props) {
       clearInterval(intervalId)
       clearTimeout(timeoutId)
     }
-  }, [isPlay, songInfor])
+  }, [isPlay, currentSong])
 
   const handleTooglePlay = useCallback(() => {
     isPlay ? audioRef.current?.pause() : audioRef.current?.play()
     dispatch(isPlayChange(!isPlay))
   }, [isPlay])
+
+  const handleNextSong = () => {
+    playList.forEach((song: SongInfor, index: number) => {
+      if (song._id === currentSong?._id) {
+        if (index === playList.length - 1) {
+          dispatch(currentSongChange(playList[0]))
+        } else {
+          dispatch(currentSongChange(playList[index + 1]))
+        }
+      }
+    });
+  }
+
+  const handlePreviousSong = () => {
+    playList.forEach((song: SongInfor, index: number) => {
+      if (song._id === currentSong?._id) {
+        if (index === 0) {
+          dispatch(currentSongChange(playList[playList.length - 1]))
+        } else {
+          dispatch(currentSongChange(playList[index - 1]))
+        }
+      }
+    });
+  }
 
   const handlerSongEnded = useCallback(() => {
     dispatch(isPlayChange(false))
@@ -53,16 +75,34 @@ function MainPlayerControl({ songInfor }: Props) {
       audioRef.current.currentTime = 0
     }
     setPercentProcess(0)
-  }, [audioRef, isPlayChange, setPercentProcess])
+    if (isRandom) {
+      let isDuplicate = true
+      while (isDuplicate) {
+        let ranDomNumber = Math.floor(Math.random() * playList.length)
+        if (arrRandom.length === playList.length) { arrRandom.length = 0 }
+        if (!arrRandom.includes(ranDomNumber)) {
+          dispatch(currentSongChange(playList[ranDomNumber]))
+          arrRandom.push(ranDomNumber)
+          console.log(arrRandom, 'length:' + arrRandom.length);
+          isDuplicate = false
+        }
+      }
+    } else {
+      handleNextSong()
+    }
+    dispatch(isPlayChange(true))
+  }, [audioRef, isPlayChange, setPercentProcess, handleNextSong, isPlayChange, currentSongChange])
+
+
 
   const calculatePercentProcess = useCallback((curTime?: number) => {
-    if (songInfor) {
+    if (currentSong) {
       if (audioRef.current) {
-        let percent = Math.round((curTime ? curTime : audioRef.current.currentTime) * 10000 / songInfor.seconds) / 100
+        let percent = Math.round((curTime ? curTime : audioRef.current.currentTime) * 10000 / currentSong.seconds) / 100
         setPercentProcess(percent)
       }
     }
-  }, [songInfor, audioRef])
+  }, [currentSong, audioRef])
 
   const handleChangeValueProcess = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     calculatePercentProcess(Number(e.target.value))
@@ -83,14 +123,20 @@ function MainPlayerControl({ songInfor }: Props) {
   return (
     <div className='flex flex-col justify-center items-center'>
       <div className='flex items-center gap-8'>
-        <BtnControl icon={faShuffle} addClass='text-xl' title='Turn on shuffle' />
-        <BtnControl icon={faStepBackward} addClass='text-xl' />
+        <BtnControl icon={faShuffle} addClass={`text-xl ${isRandom ? 'text-sky-500' : ''}`} title='Turn on shuffle'
+          onClick={() => { setIsRandom(!isRandom); setIsLoop(false) }}
+        />
+        <BtnControl icon={faStepBackward} addClass='text-xl' title='Previous song'
+          onClick={handlePreviousSong}
+        />
         <BtnControl icon={isPlay ? faCirclePause : faCirclePlay} addClass='text-4xl hover:text-sky-500'
           onClick={handleTooglePlay}
         />
-        <BtnControl icon={faForwardStep} addClass='text-xl' />
+        <BtnControl icon={faForwardStep} addClass='text-xl' title='Next song'
+          onClick={handleNextSong}
+        />
         <BtnControl icon={faRepeat} title='Turn on playback' addClass={`text-xl ${isLoop ? 'text-sky-500' : ''}`}
-          onClick={() => { setIsLoop(!isLoop) }}
+          onClick={() => { setIsLoop(!isLoop); setIsRandom(false) }}
         />
       </div>
       <div className='flex items-center w-full'>
@@ -100,24 +146,26 @@ function MainPlayerControl({ songInfor }: Props) {
             className='input_range h-[5px]'
             style={{ backgroundSize: `${percentProcess}%  100%` }}
             type="range" min='0'
-            max={songInfor?.seconds}
+            max={currentSong?.seconds}
             value={audioRef.current?.currentTime}
             onChange={handleChangeValueProcess}
           />
           <div className=''>
             <audio
               ref={audioRef}
-              src={songInfor?.src_music}
+              src={currentSong?.src_music}
               loop={isLoop}
               onEnded={handlerSongEnded}
               muted={isMuted}
             />
           </div>
         </div>
-        <span>{songInfor?.time_format}</span>
+        <span>{currentSong?.time_format}</span>
       </div>
     </div>
   )
 }
 
 export default memo(MainPlayerControl)
+
+
