@@ -28,6 +28,14 @@ export const getTopFavourite = (limit: number, page: number) => {
   })
 }
 
+export const searchSong = (query: string) => {
+  return http.get<ListSong>('/search', {
+    params: {
+      query: query
+    }
+  })
+}
+
 export const downLoadSong = (url: string, songName: string) => {
   return http
     .get(url, {
