@@ -22,7 +22,7 @@ export default function MainLayout({ children }: Props) {
     setDarkMode(!darkMode)
   }
   return (
-    <div className={`flex overflow-hidden ${darkMode ? 'dark' : ''}`}>
+    <div className={`flex ${darkMode ? 'dark' : ''} overflow-hidden`}>
       <Navigation />
       <div className='w-screen max-w-[calc(100vw-260px)] ml-[260px]'>
         <Header darkMode={darkMode} switchDarkMode={switchDarkMode} />

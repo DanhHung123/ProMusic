@@ -53,7 +53,7 @@ function Playlist() {
         </div>
       </div>
 
-      <div className='px-2 flex-1 overflow-y-auto'>
+      <div className='px-2 flex-1 overflow-y-auto z-50 scrollbar scrollbar-w-1 scrollbar-track-gray-300 scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full dark:scrollbar-thumb-slate-600 dark:scrollbar-track-slate-700 '>
         <ul className='my-3'>
           {
             listSong?.map((song: SongInfor) => {
